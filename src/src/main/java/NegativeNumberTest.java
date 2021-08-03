@@ -10,11 +10,11 @@ public class NegativeNumberTest {
         System.out.println("===negative number test====");
 
         Map<String, String> mapQuestions = buildQuestions(42, 100);
-        PDFCreator pdfCreator = new PDFCreator("./pdfDoc/negative_" + LocalDateTime.now().toString() + ".pdf");
+        PDFCreator pdfCreator = new PDFCreator("tttt", "./pdfDoc/negative_" + LocalDateTime.now().toString() + ".pdf");
         List<String> listQuestions = mapQuestions.keySet().stream().collect(Collectors.toList());
         Collections.shuffle(listQuestions);
         List<String> listAnswers = getAnswers(mapQuestions, listQuestions);
-        pdfCreator.outputPdf(listQuestions, listAnswers);
+        pdfCreator.outputPdf(listQuestions, listAnswers, 3);
 
         System.out.println("====done====");
 

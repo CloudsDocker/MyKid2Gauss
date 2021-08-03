@@ -2,20 +2,20 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TwoDigitsDivTest {
+public class HundredSubstractANumberTest {
     private static final DecimalFormat format = new DecimalFormat("#.####");
 
     public static void main(String[] args) {
-        System.out.println("===60 / 5====");
+        System.out.println("=== 100 - 17====");
 
         Map<String, String> mapQuestions = buildQuestions(42, 100);
-        PDFCreator pdfCreator = new PDFCreator("quick calculation on two digits divide one, such as 60/5", "2DigitsDiv");
+        PDFCreator pdfCreator = new PDFCreator("Tttttt", "HundredsMinutes2Digits");
         List<String> listQuestions = mapQuestions.keySet().stream().collect(Collectors.toList());
         Collections.shuffle(listQuestions);
         List<String> listAnswers = getAnswers(mapQuestions, listQuestions);
-        pdfCreator.outputPdf(listQuestions, listAnswers, 3);
+        String filePath = pdfCreator.outputPdf(listQuestions, listAnswers, 3);
 
-        System.out.println("====done====");
+        System.out.println("====done==== File is:" + filePath);
 
     }
 
@@ -29,18 +29,18 @@ public class TwoDigitsDivTest {
 
         int counter = questionsNumber;
         while (counter > 0) {
-            int op1 = new Random().nextInt(maxNumber);
+            int op1 = 100;
             int op2 = new Random().nextInt(maxNumber);
 
-            if (op1 * op2 == 0 || op1 % op2 != 0 || op1 / op2 == 1 || op1 == 1 || op2 == 1) {
+            if (op1 * op2 == 0 || op1 / op2 == 1 || op2 == 1) {
                 // avoid ArithmeticException / by zero
                 // avoid simplest case =1
                 continue;
             }
 
-            String question = String.format("%d ÷ %d =", op1, op2);
+            String question = String.format("%d - %d =", op1, op2);
 
-            mapQuestionsAnswers.put(question, String.valueOf(op1 / op2));
+            mapQuestionsAnswers.put(question, String.valueOf(op1 - op2));
             counter--;
 
         }

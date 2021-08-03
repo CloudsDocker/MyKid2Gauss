@@ -9,26 +9,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PDFCreator {
-    private static Font fontTitle = new Font(Font.FontFamily.TIMES_ROMAN, 28,
+    private static Font fontTitle = new Font(Font.FontFamily.TIMES_ROMAN, 23,
             Font.BOLD);
     private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
             Font.BOLD);
     private static Font contentText = new Font(Font.FontFamily.COURIER, 25);
     private String filePath;
+    private String fileName;
+    private String fileDescription;
 
-    public PDFCreator(String filePath) {
-        this.filePath = filePath;
+    public PDFCreator(String fileName, String shortDescription) {
+        this.fileName = fileName;
+        this.fileDescription = shortDescription;
+        this.filePath = "./pdfDoc/" + fileName + LocalDateTime.now().toString() + ".pdf";
     }
 
     public static void main(String[] args) {
         System.out.println("==output pdf file===");
-        PDFCreator pdfCreator = new PDFCreator("./pdfDoc/enya.pdf");
+        PDFCreator pdfCreator = new PDFCreator("enya.pdf", "pdfCreatoer own test");
         List<String> listQuestions = createDummyQuestions();
-        pdfCreator.outputPdf(listQuestions, null);
+        pdfCreator.outputPdf(listQuestions, null, 3);
 
     }
 
@@ -40,7 +45,7 @@ public class PDFCreator {
         return list;
     }
 
-    public void outputPdf(List<String> listQuestions, List<String> listAnswers) {
+    public String outputPdf(List<String> listQuestions, List<String> listAnswers, int numCols) {
         prepareFilePath(filePath);
         Document document = new Document();
         final Paragraph NEW_LINE = new Paragraph();
@@ -48,7 +53,7 @@ public class PDFCreator {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
             Paragraph preface = createTitle();
-            Paragraph paraTable = createQuestionsTable(listQuestions, listAnswers);
+            Paragraph paraTable = createQuestionsTable(listQuestions, listAnswers, numCols);
 
             document.add(preface);
             document.add(paraTable);
@@ -59,24 +64,25 @@ public class PDFCreator {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        return filePath;
     }
 
     private Paragraph createTitle() {
         Paragraph preface = new Paragraph();
-        preface.add(new Paragraph("Math sheet for Enya: Quick calculation", fontTitle));
-        preface.add(new Paragraph("Created at " + LocalDateTime.now().toString(), smallBold));
+        preface.add(new Paragraph("Math work sheet: " + fileDescription, fontTitle));
+        preface.add(new Paragraph("Identifier: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")), smallBold));
         preface.add(new Paragraph("Timing: start time:_____________  finish time: _____________", smallBold));
-        preface.add(newLine());
+//        preface.add(newLine());
         return preface;
     }
 
-    private Paragraph createQuestionsTable(List<String> listQuestions, List<String> listAnswers) {
+    private Paragraph createQuestionsTable(List<String> listQuestions, List<String> listAnswers, int numCols) {
 //        Chapter chapter = new Chapter(new Paragraph(), 1);
         Paragraph paraTable = new Paragraph("All questions ", contentText);
 //        Section section = chapter.addSection(paraTable);
 
-        int column = 3;
-        PdfPTable table = new PdfPTable(column);
+//        int column = numCols;
+        PdfPTable table = new PdfPTable(numCols);
 //        IntStream.range(0,12).forEach();
 //        table.addCell("");
         for (int i = 0; i < listQuestions.size(); i++) {
@@ -89,7 +95,7 @@ public class PDFCreator {
 
 //        Section section2 = chapter.addSection(paraTable2);
 
-        PdfPTable table2 = new PdfPTable(column);
+        PdfPTable table2 = new PdfPTable(numCols);
 //        IntStream.range(0,12).forEach();
 //        table.addCell("");
         for (int i = 0; i < listAnswers.size(); i++) {
